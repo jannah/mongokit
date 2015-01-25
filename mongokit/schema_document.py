@@ -650,7 +650,8 @@ class SchemaDocument(dict):
             for i in range(len(struct)):
                 self._validate_doc(doc[i], struct[i], path)
 
-    def _process_validators(self, doc, _struct, _path=""):
+    def _process_validators(self, doc, struct, path=""):
+        doted_struct = DotCollapsedDict(self.structure)
         doted_doc = DotCollapsedDict(doc)
         for key, validators in self.validators.iteritems():
             if key in doted_doc and doted_doc[key] is not None:
@@ -659,10 +660,10 @@ class SchemaDocument(dict):
                 for validator in validators:
                     try:
                         if not validator(doted_doc[key]):
-                            raise ValidationError("%s does not pass the validator " + validator.__name__)
+                            raise ValidationError("%s does not pass the validator "%key + validator.__name__)
                     except Exception, e:
                         self._raise_exception(ValidationError, key,
-                                              unicode(e) % key)
+                                              unicode(e))
 
     def _process_custom_type(self, target, doc, struct, path="", root_path=""):
         for key in struct:
