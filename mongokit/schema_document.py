@@ -660,10 +660,9 @@ class SchemaDocument(dict):
                 for validator in validators:
                     try:
                         if not validator(doted_doc[key]):
-                            raise ValidationError("%s does not pass the validator " % key + validator.__name__)
+                            raise ValidationError("%s does not pass the validator %s" % (key, validator.__name__))
                     except Exception, e:
-                        self._raise_exception(ValidationError, key,
-                                              unicode(e))
+                        self._raise_exception(ValidationError, key, unicode(e))
 
     def _process_custom_type(self, target, doc, struct, path="", root_path=""):
         for key in struct:
